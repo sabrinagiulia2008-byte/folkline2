@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Folkline Map</title>
+
+
+    <!-- Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+    <style>
+      html,
+      body,
+      #map {
+        height: 100%;
+        margin: 0;
+        background-color: #1b2632;
+      }
+
+
+      .leaflet-container {
+        background: #1b2632 !important;
+      }
+
+
+      .leaflet-control-zoom {
+        display: none !important;
+      }
+
+
+      .country-label {
+        font-size: 10px;
+        color: #eee9df;
+        text-shadow: 1px 1px 2px #000;
+      }
+    </style>
+  </head>
+
+
+  <body>
+    <div id="map"></div>
+
+
+    <script>
+      const map = L.map("map", {
+        center: [30, 0],
+        zoom: 2,
+        minZoom: 2,
+        maxZoom: 5,
+        zoomControl: false,
+        worldCopyJump: true,
+      });
+
+
+      // Layer style defaults
+      const defaultStyle = {
+        fillColor: "#2C3B4D",
+        color: "#1B2632",
+        weight: 1.5,
+        fillOpacity: 1,
+      };
+
+
+      const highlightStyle = {
+        fillColor: "#FFB162",
+        color: "#1B2632",
+        weight: 2,
+        fillOpacity: 1,
+      };
+
+
+      let selectedLayer = null;
+
+
+      fetch(
+        "https://raw.githubusercontent.com/johan/world.geo.json/master/countries.geo.json"
+      )
+        .then((r) => r.json())
+        .then((data) => {
+          L.geoJSON(data, {
+            style: defaultStyle,
+            onEachFeature: (feature, layer) => {
+              const name = feature.properties.name;
+
+
+              layer.on("mouseover", () => {
+                if (layer !== selectedLayer) {
+                  layer.setStyle({ fillColor: "#3C4C5D" });
+                }
+              });
+
+
+              layer.on("mouseout", () => {
+                if (layer !== selectedLayer) {
+                  layer.setStyle(defaultStyle);
+                }
+              });
+
+
+              layer.on("click", () => {
+                if (selectedLayer) {
+                  selectedLayer.setStyle(defaultStyle);
+                }
+                selectedLayer = layer;
+                layer.setStyle(highlightStyle);
+
+
+                // Trimite numele țării către aplicația React
+                window.parent.postMessage(name, "*");
+              });
+            },
+          }).addTo(map);
+        });
+    </script>
+  </body>
+</html>
