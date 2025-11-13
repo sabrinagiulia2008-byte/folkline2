@@ -1,10 +1,10 @@
 // src/screens/Explore.js
-import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, StyleSheet, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, TextInput, StyleSheet } from "react-native";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-const countriesData = require("../data/countries.json"); // harta ta
+const countriesData = require("../data/countries.json");
 
 export default function Explore() {
   const [search, setSearch] = useState("");
@@ -35,7 +35,6 @@ export default function Explore() {
 
   return (
     <View style={styles.container}>
-      {/* Search Bar */}
       <TextInput
         style={styles.searchInput}
         placeholder="Caută o țară..."
@@ -43,14 +42,8 @@ export default function Explore() {
         onChangeText={setSearch}
       />
 
-      {/* Hartă */}
       <View style={styles.mapContainer}>
-        <MapContainer
-          center={[20, 0]}
-          zoom={2}
-          style={{ height: "100%", width: "100%" }}
-          scrollWheelZoom={false}
-        >
+        <MapContainer center={[20, 0]} zoom={2} style={{ height: "100%", width: "100%" }}>
           <TileLayer
             url="https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>'
@@ -65,16 +58,13 @@ export default function Explore() {
                   : countryStyle
               }
               onEachFeature={(feature, layer) => {
-                layer.on({
-                  click: () => onCountryClick(feature),
-                });
+                layer.on({ click: () => onCountryClick(feature) });
               }}
             />
           ))}
         </MapContainer>
       </View>
 
-      {/* Panel din jos */}
       {selectedCountry && (
         <View style={styles.bottomPanel}>
           <Text style={styles.panelTitle}>{selectedCountry.name}</Text>
