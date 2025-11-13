@@ -1,4 +1,11 @@
 {
-  "name": "folkline2",
-  "displayName": "Folkline"
+  "expo": {
+    "name": "Folkline Explore",
+    "slug": "folkline-explore",
+    "version": "1.0.0",
+    "web": {
+      "bundler": "metro",
+      "output": "static"
+    }
+  }
 }
